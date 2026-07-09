@@ -171,7 +171,7 @@ VALUES ('XXX', 'Not configured', '¤', 1);
 export const CREATE_PLAID_ITEMS_TABLE = `
 CREATE TABLE IF NOT EXISTS plaid_items (
   item_id TEXT PRIMARY KEY,
-  access_token TEXT NOT NULL,
+  credential_key TEXT NOT NULL,
   cursor TEXT,
   status TEXT NOT NULL DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE', 'ERROR', 'DEAUTHORIZED')),
   created_at TEXT NOT NULL DEFAULT (datetime('now')),

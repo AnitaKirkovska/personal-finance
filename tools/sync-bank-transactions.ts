@@ -70,11 +70,29 @@ const tool: ToolDefinition = {
 
     const items = queryAll(
       db,
-      "SELECT item_id, access_token, cursor, status FROM plaid_items WHERE status = 'ACTIVE'",
+      "SELECT item_id, credential_key, cursor, status FROM plaid_items WHERE status = 'ACTIVE'",
     ) as any[];
 
     if (!items.length) {
       return { content: "No bank accounts connected. Use link_bank to connect one first.", isError: true };
+    }
+
+    // Resolve access tokens from the credential store
+    const { getSecureKeyAsync } = await import("@vellumai/plugin-api");
+    const itemsWithTokens = [];
+    for (const item of items) {
+      let accessToken: string | undefined;
+      if (typeof getSecureKeyAsync === "function") {
+        accessToken = await getSecureKeyAsync(item.credential_key);
+      }
+      if (!accessToken) {
+        continue;
+      }
+      itemsWithTokens.push({ ...item, access_token: accessToken });
+    }
+
+    if (!itemsWithTokens.length) {
+      return { content: "No bank accounts with valid credentials. Use link_bank to reconnect.", isError: true };
     }
 
     const dryRun = input.dry_run ?? false;
@@ -82,7 +100,7 @@ const tool: ToolDefinition = {
     let totalSkipped = 0;
     const lines: string[] = [];
 
-    for (const item of items) {
+    for (const item of itemsWithTokens) {
       // Use Plaid's /transactions/sync with cursor pagination
       let cursor = item.cursor;
       let hasMore = true;

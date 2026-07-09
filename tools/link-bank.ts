@@ -73,14 +73,37 @@ const tool: ToolDefinition = {
       const accessToken = data.access_token;
       const itemId = data.item_id;
 
-      // Store the access token in the database
-      // (In production, this should be encrypted at rest)
+      // Store the access token in the credential store (not plaintext in SQLite)
+      const credentialKey = `plaid_token_${itemId}`;
+      try {
+        const { getSecureKeyAsync } = await import("@vellumai/plugin-api");
+        if (typeof getSecureKeyAsync === "function") {
+          // Use the credential store via a write mechanism
+          // getSecureKeyAsync is for reading; we need to store via the credential API
+          // For now, we store a reference key in SQLite and the token in the credential store
+        }
+      } catch {}
+
+      // Store credential key reference in SQLite (not the token itself)
       queryRun(
         db,
-        `INSERT OR REPLACE INTO plaid_items (item_id, access_token, cursor, status, created_at, updated_at)
+        `INSERT OR REPLACE INTO plaid_items (item_id, credential_key, cursor, status, created_at, updated_at)
          VALUES (?, ?, NULL, 'ACTIVE', datetime('now'), datetime('now'))`,
-        itemId, accessToken,
+        itemId, credentialKey,
       );
+
+      // Store the actual token in the credential store
+      try {
+        const { setSecureKey } = await import("@vellumai/plugin-api");
+        if (typeof setSecureKey === "function") {
+          await setSecureKey(credentialKey, accessToken);
+        } else {
+          // Fallback: if credential store write isn't available, we cannot proceed safely
+          return { content: `Bank connection exchanged but credential store unavailable. Token not stored. Please ensure credential API is configured. (Item ID: ${itemId})`, isError: true };
+        }
+      } catch (e) {
+        return { content: `Bank connection exchanged but credential store write failed: ${e}. (Item ID: ${itemId})`, isError: true };
+      }
 
       return { content: `Bank account connected successfully! (Item ID: ${itemId}) You can now use sync_bank_transactions to pull your transactions.` };
     }
