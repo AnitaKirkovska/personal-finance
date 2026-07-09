@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="icon.svg" width="120" alt="personal-finance">
+
 # personal-finance
 
 **Track expenses, income, recurring bills, and savings from your assistant**
