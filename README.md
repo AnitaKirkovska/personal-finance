@@ -23,10 +23,12 @@ Personal finance for your Vellum assistant. Log expenses and income, set up recu
 - **Financial summaries.** Get a breakdown of income, expenses, pending payments, and category spending for any period.
 - **Allocation planning.** When a payment comes in, see exactly what's committed and what's left over.
 - **Receipt OCR.** Send a photo of a receipt and the assistant reads the merchant, amount, date, and items for you.
+- **Bank sync via Plaid.** Connect your bank account once and auto-import transactions. Cursor-based sync only pulls new data since the last pull.
 
 ## Requirements
 
 - **Node.js 24+** for the built-in `node:sqlite` module. Node 22+ works if `better-sqlite3` is installed as a fallback.
+- **Plaid account** (optional) for bank sync. Free sandbox tier works for testing. Set `PLAID_CLIENT_ID` and `PLAID_SECRET` as environment variables or plugin credentials. Set `PLAID_ENV` to `sandbox` (default), `development`, or `production`.
 
 ## Install
 
@@ -53,6 +55,8 @@ First use: the assistant will ask you to configure your currency, then you can s
 | `run_daily_sync` (tool) | Generate recurring instances, mark overdue, return reminders |
 | `manage_fund` (tool) | Create, list, deposit, withdraw, or archive savings funds and accounts |
 | `plan_allocation` (tool) | Show commitments and remaining balance for a given income amount |
+| `link_bank` (tool) | Connect a bank account via Plaid Link (two-step: get URL, then exchange public token) |
+| `sync_bank_transactions` (tool) | Pull new transactions from connected banks and auto-log them as expenses |
 | `init` (hook) | Initialize the SQLite database on plugin load |
 | `personal-finance` (skill) | The finance management workflow and routing logic |
 
@@ -65,6 +69,8 @@ First use: the assistant will ask you to configure your currency, then you can s
 - "I'm saving for a trip to Japan, create a fund with a $5000 target"
 - "What bills are due this week?"
 - "Here's a receipt, log it for me"
+- "Connect my bank account so transactions import automatically"
+- "Sync my bank transactions"
 
 ## License
 

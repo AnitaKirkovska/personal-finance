@@ -84,9 +84,24 @@ When the user receives a payment and wants to know how to allocate it:
 - It shows pending expenses, recurring commitments, required savings, and remaining balance.
 - If the user has income in multiple currencies, call it once per currency.
 
+## Bank sync (Plaid)
+
+When the user wants to connect their bank for automatic transaction import:
+
+1. Call `link_bank` (without public_token) to get a Plaid Link URL.
+2. Tell the user to open the URL in their browser and log in to their bank.
+3. After they complete the flow, they'll get a public_token. Have them paste it back.
+4. Call `link_bank` again with the public_token to exchange it for a stored access token.
+5. After that, `sync_bank_transactions` pulls new transactions using cursor-based pagination. Only new transactions since the last sync are imported.
+
+Bank-synced transactions are auto-categorized based on Plaid's category data. Income-like transactions (negative amounts) are skipped. Supports dry_run mode to preview without writing.
+
+Requires Plaid credentials: `plaid_client_id` and `plaid_secret` in plugin credentials, or `PLAID_CLIENT_ID` and `PLAID_SECRET` environment variables. Default environment is sandbox; set `PLAID_ENV` to `development` or `production` for real bank data.
+
 ## Currency handling
 
 - All amounts are stored with a currency code.
 - The user can have multiple currencies configured.
 - Most tools default to the user's default currency if none is specified.
 - When showing amounts, always include the currency symbol and code.
+- Bank-synced transactions may bring in currencies not yet configured. The sync tool auto-adds unknown currencies.

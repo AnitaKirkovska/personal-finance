@@ -168,6 +168,17 @@ INSERT OR IGNORE INTO currencies (code, name, symbol, is_default)
 VALUES ('XXX', 'Not configured', '¤', 1);
 `;
 
+export const CREATE_PLAID_ITEMS_TABLE = `
+CREATE TABLE IF NOT EXISTS plaid_items (
+  item_id TEXT PRIMARY KEY,
+  access_token TEXT NOT NULL,
+  cursor TEXT,
+  status TEXT NOT NULL DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE', 'ERROR', 'DEAUTHORIZED')),
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+`;
+
 export const ALL_MIGRATIONS = [
   CREATE_CURRENCIES_TABLE,
   CREATE_OCR_EXTRACTIONS_TABLE,
@@ -180,6 +191,7 @@ export const ALL_MIGRATIONS = [
   CREATE_REMINDERS_UNIQUE_INDEX,
   CREATE_FUNDS_TABLE,
   CREATE_FUND_TRANSACTIONS_TABLE,
+  CREATE_PLAID_ITEMS_TABLE,
 ] as const;
 
 export const ALL_SEEDS = [SEED_PLACEHOLDER_CURRENCY] as const;
