@@ -1,0 +1,18 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="256" height="256" rx="56" fill="#0F0F23"/>
+  <!-- Wallet body -->
+  <rect x="52" y="76" width="152" height="104" rx="20" fill="#00D4AA"/>
+  <!-- Wallet flap -->
+  <path d="M52 96C52 84 62 76 74 76H182C194 76 204 84 204 96V100H52V96Z" fill="#00B894"/>
+  <!-- Card slot -->
+  <rect x="68" y="108" width="88" height="56" rx="8" fill="#0F0F23"/>
+  <!-- Card stripe -->
+  <rect x="68" y="120" width="88" height="6" fill="#00D4AA" opacity="0.6"/>
+  <!-- Coin -->
+  <circle cx="172" cy="136" r="24" fill="#FFD700"/>
+  <circle cx="172" cy="136" r="18" fill="none" stroke="#E6B800" stroke-width="2"/>
+  <text x="172" y="144" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#B8860B">$</text>
+  <!-- Sparkle -->
+  <circle cx="200" cy="92" r="4" fill="#00D4AA"/>
+  <circle cx="210" cy="84" r="2.5" fill="#00D4AA" opacity="0.7"/>
+</svg>
