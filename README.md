@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="icon.svg" width="120" alt="personal-finance">
+<img src="icon.svg?v=2" width="120" alt="personal-finance">
 
 # personal-finance
 
